@@ -1,4 +1,4 @@
-package com.example.demo.model.chainOfRHandlers
+package com.example.demo.controller.chainOfRHandlers
 
 class LoginHandler: Handler {
 

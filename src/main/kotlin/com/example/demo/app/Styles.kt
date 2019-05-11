@@ -28,9 +28,14 @@ class Styles : Stylesheet() {
         }
 
         loginScreen {
+            label {
+                padding = box(12.px)
+                fontFamily = "Libre Sans"
+                fontWeight = FontWeight.BOLD
+                fontSize = 15.px
+            }
             padding = box(12.px)
             fontFamily = "Libre Sans"
-            fontWeight = FontWeight.BOLD
             fontSize = 15.px
         }
     }

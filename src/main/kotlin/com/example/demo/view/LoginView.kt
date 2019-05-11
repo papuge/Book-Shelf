@@ -1,20 +1,27 @@
 package com.example.demo.view
 
 import com.example.demo.app.Styles
+import com.example.demo.controller.UserController
 import javafx.geometry.Pos
 import tornadofx.*
 import javafx.scene.paint.Color
 import javafx.scene.text.FontPosture
+import javafx.scene.text.FontWeight
+import java.awt.Font
 
 class LoginView : View("Welcome to Book Store!") {
+
+    private val loginController: UserController by inject()
+
     override val root = hbox {
         this.alignment = Pos.CENTER
         form {
             alignment = Pos.CENTER
             fieldset("Login") {
-//                style {
-//                    fontSize = 22.px
-//                }
+                style {
+                    fontSize = 22.px
+                    alignment = Pos.CENTER
+                }
                 field("Username") {
                     addClass(Styles.loginScreen)
                     textfield()

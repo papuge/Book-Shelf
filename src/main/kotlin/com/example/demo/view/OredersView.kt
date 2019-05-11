@@ -7,7 +7,7 @@ import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class OredersView : View("Orders") {
+class OredersView : View("Account") {
     override val root = vbox(15){
         alignment = Pos.TOP_CENTER
         label("My orders") {

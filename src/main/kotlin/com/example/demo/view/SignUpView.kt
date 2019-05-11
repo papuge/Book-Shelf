@@ -1,5 +1,6 @@
 package com.example.demo.view
 
+import com.example.demo.app.Styles
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import tornadofx.*
@@ -17,6 +18,7 @@ class SignUpView : View("Welcome to Book Store!") {
         }
         center = form {
             form {
+                addClass(Styles.loginScreen)
                 fieldset("Personal Info") {
                     field("First name") {
                         textfield()

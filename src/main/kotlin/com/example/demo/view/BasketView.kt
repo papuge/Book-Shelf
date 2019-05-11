@@ -4,10 +4,10 @@ import com.example.demo.app.Styles
 import javafx.scene.paint.Color
 import tornadofx.*
 
-class BasketView : View("BasketItem") {
+class BasketView : View("Basket") {
     val orders = listOf("One", "Two", "Three").observable()
     override val root = vbox {
-        label("BasketItem") {
+        label("Basket") {
             addClass(Styles.tabName)
             style {
                 backgroundColor += Color.LAVENDER
