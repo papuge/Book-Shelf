@@ -7,6 +7,8 @@ import tornadofx.*
 
 class LibraryController: Controller() {
 
+    val bController: BasketController by inject()
+
     val items = FXCollections.observableArrayList<BasketItem>(
             Book("Flowers for Algernon", "Fiction", "Daniel Keyes",
                     14.84, 2016, "Ecsmo", "/fa.jpg"),
@@ -29,5 +31,9 @@ class LibraryController: Controller() {
 
     class ItemScope: Scope() {
         val model = BasketItemModel()
+    }
+
+    fun addToBasket(item: BasketItem) {
+        bController.add(item)
     }
 }

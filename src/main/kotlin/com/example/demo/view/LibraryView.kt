@@ -3,10 +3,12 @@ package com.example.demo.view
 import com.example.demo.app.Styles
 import com.example.demo.controller.LibraryController
 import com.example.demo.model.Book
+import javafx.geometry.Point2D
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
+import javafx.util.Duration
 import tornadofx.*
 import java.awt.Font
 
@@ -26,7 +28,8 @@ class LibraryView : View("Library") {
         textfield {
             promptText = "Search"
             libController.data.filterWhen(textProperty(),
-                    { query, item -> item.title.contains(query, ignoreCase = true)})
+                    { query, item -> item.title.contains(query, ignoreCase = true)
+                            || item.author.contains(query, ignoreCase = true)})
             style{
                 spacing = 10.px
                 maxWidth = 350.px
@@ -36,7 +39,7 @@ class LibraryView : View("Library") {
         borderpane {
             center = datagrid(libController.data) {
                 cellHeight = 225.0
-                onUserSelect(1) {
+                onUserSelect(2) {
                     val displayScope = libController.itemDisplayScope(selectedItem)
                     find(ItemView::class, scope = displayScope).openWindow()
                 }
@@ -57,7 +60,9 @@ class LibraryView : View("Library") {
                                 backgroundColor += c("#28e090")
                             }
                             action {
-
+                                libController.addToBasket(it)
+                                scale(Duration(350.0), Point2D(2.0, 2.0),
+                                        reversed = true)
                             }
                         }
                     }

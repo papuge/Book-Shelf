@@ -2,11 +2,13 @@ package com.example.demo.view
 
 import com.example.demo.app.Styles
 import com.example.demo.controller.UserController
+import javafx.geometry.Point2D
 import javafx.geometry.Pos
 import tornadofx.*
 import javafx.scene.paint.Color
 import javafx.scene.text.FontPosture
 import javafx.scene.text.FontWeight
+import javafx.util.Duration
 import java.awt.Font
 
 class LoginView : View("Welcome to Book Store!") {
@@ -41,6 +43,7 @@ class LoginView : View("Welcome to Book Store!") {
                         fontSize = 15.px
                     }
                     action {
+                        scale(Duration(400.0), Point2D(1.5, 1.5))
                         replaceWith<TabbedMenuView>(sizeToScene = true)
                     }
                 }
@@ -60,6 +63,7 @@ class LoginView : View("Welcome to Book Store!") {
                         fontSize = 15.px
                     }
                     action {
+                        scale(Duration(400.0), Point2D(1.5, 1.5))
                         replaceWith<SignUpView>(sizeToScene = true)
                     }
                 }
@@ -69,9 +73,9 @@ class LoginView : View("Welcome to Book Store!") {
         }
     }
 
-    override fun onDock() {
-        with(root) {
-            resize(250.0, 300.0)
-        }
-    }
+//    override fun onDock() {
+//        with(root) {
+//            resize(250.0, 300.0)
+//        }
+//    }
 }

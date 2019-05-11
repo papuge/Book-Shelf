@@ -1,14 +1,17 @@
 package com.example.demo.app
 
 import javafx.geometry.Pos
+import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.*
+import java.time.Duration
 
 class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
         val tabName by cssclass()
         val loginScreen by cssclass()
+        val basketItems by cssclass()
     }
 
     init {
@@ -37,6 +40,20 @@ class Styles : Stylesheet() {
             padding = box(12.px)
             fontFamily = "Libre Sans"
             fontSize = 15.px
+        }
+
+        basketItems {
+            label {
+                padding = box(12.px)
+                fontFamily = "Libre Sans"
+                fontSize = 15.px
+            }
+            button {
+                prefWidth = 35.px
+                prefHeight = 35.px
+                backgroundColor += Color.AZURE
+                textFill = Color.SLATEGRAY
+            }
         }
     }
 }
