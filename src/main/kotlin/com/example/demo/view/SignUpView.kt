@@ -1,11 +1,17 @@
 package com.example.demo.view
 
 import com.example.demo.app.Styles
+import com.example.demo.controller.UserController
+import com.example.demo.model.UserModel
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import tornadofx.*
 
 class SignUpView : View("Welcome to Book Store!") {
+
+    private val model: UserModel by inject()
+    private val controller: UserController by inject()
+
     override val root = borderpane {
         top = button("< Back") {
             style {
@@ -19,35 +25,35 @@ class SignUpView : View("Welcome to Book Store!") {
         center = form {
             form {
                 addClass(Styles.loginScreen)
-                fieldset("Personal Info") {
-                    field("First name") {
-                        textfield()
+
+                fieldset("Info / Contacts") {
+                    field("Username") {
+                        textfield(model.username).required()
                     }
 
-                    field("Last name") {
-                        textfield()
+                    field("Password") {
+                        passwordfield(model.password) {
+                            required()
+                            validator {
+                                if(it.isNullOrBlank()) null
+                                else {
+                                    if (it!!.length < 4) error("password min length: 4") else null
+                                }
+                            }
+                        }
                     }
 
-                    field("Birth Date") {
-                        datepicker()
-                    }
-                }
-
-                fieldset("Contact") {
                     field("Email") {
-                        textfield()
-                    }
-
-                    field("Phone") {
-                        textfield()
-                    }
-
-                    field("City") {
-                        textfield()
-                    }
-
-                    field("Address") {
-                        textfield()
+                        textfield(model.email) {
+                            required()
+                            validator {
+                                if(it.isNullOrBlank()) null
+                                else {
+                                    if (it!!.length < 4 && it!!.contains('@'))
+                                        error("invalid email") else null
+                                }
+                            }
+                        }
                     }
 
                 }
@@ -58,10 +64,33 @@ class SignUpView : View("Welcome to Book Store!") {
                         backgroundColor += Color.DODGERBLUE
                         textFill = Color.WHITE
                     }
+                    action {
+                        if (controller.register(model))
+                            replaceWith<LoginView>(sizeToScene = true)
+                        else
+                            find<InvalidSignUpView>().openModal()
+                    }
                 }
 
             }
         }
     }
 
+    override fun onDock() {
+        model.validate(decorateErrors = false)
+        model.username.value = ""
+        model.password.value = ""
+        model.email.value = ""
+    }
+
+}
+
+class InvalidSignUpView: Fragment() {
+    override val root = label("This user already exist!") {
+        alignment = Pos.CENTER
+        style {
+            textFill = Color.RED
+            fontSize = 18.px
+        }
+    }
 }

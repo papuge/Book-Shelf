@@ -2,18 +2,18 @@ package com.example.demo.view
 
 import com.example.demo.app.Styles
 import com.example.demo.controller.UserController
+import com.example.demo.model.UserModel
 import javafx.geometry.Point2D
 import javafx.geometry.Pos
 import tornadofx.*
 import javafx.scene.paint.Color
 import javafx.scene.text.FontPosture
-import javafx.scene.text.FontWeight
 import javafx.util.Duration
-import java.awt.Font
 
 class LoginView : View("Welcome to Book Store!") {
 
     private val loginController: UserController by inject()
+    private val model: UserModel by inject()
 
     override val root = hbox {
         this.alignment = Pos.CENTER
@@ -26,25 +26,37 @@ class LoginView : View("Welcome to Book Store!") {
                 }
                 field("Username") {
                     addClass(Styles.loginScreen)
-                    textfield()
+                    textfield(model.username).required()
                 }
 
                 field("Password") {
                     addClass(Styles.loginScreen)
-                    passwordfield()
+                    passwordfield(model.password) {
+                        required()
+                        validator {
+                            if(it.isNullOrBlank()) null
+                            else {
+                               if (it!!.length < 4) error("Password min length: 4") else null
+                            }
+                        }
+                    }
                 }
             }
 
             vbox(20) {
                 alignment = Pos.CENTER
                 button("Sign in") {
+                    enableWhen(model.valid)
                     style {
                         textFill = Color.DARKBLUE
                         fontSize = 15.px
                     }
                     action {
-                        scale(Duration(400.0), Point2D(1.5, 1.5))
-                        replaceWith<TabbedMenuView>(sizeToScene = true)
+                        if (loginController.authenticate(model.username.value,
+                                        model.password.value))
+                            replaceWith<TabbedMenuView>(sizeToScene = true)
+                        else
+                            find<InvalidLoginView>().openModal()
                     }
                 }
 
@@ -73,9 +85,27 @@ class LoginView : View("Welcome to Book Store!") {
         }
     }
 
-//    override fun onDock() {
+    override fun onDock() {
+        model.validate(decorateErrors = false)
+        if (loginController.autoLogin())
+            replaceWith<TabbedMenuView>(sizeToScene = true)
 //        with(root) {
 //            resize(250.0, 300.0)
 //        }
-//    }
+    }
+
+    fun clean() {
+        model.username.value = ""
+        model.password.value = ""
+    }
+}
+
+class InvalidLoginView: Fragment() {
+    override val root = label("Invalid username or password!") {
+        alignment = Pos.CENTER
+        style {
+            textFill = Color.RED
+            fontSize = 18.px
+        }
+    }
 }
