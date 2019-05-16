@@ -2,17 +2,17 @@ package com.example.demo.view
 
 import com.example.demo.app.Styles
 import com.example.demo.controller.BasketController
-import javafx.collections.FXCollections
+import javafx.geometry.Point2D
 import javafx.geometry.Pos
-import javafx.scene.Parent
 import javafx.scene.paint.Color
+import javafx.util.Duration
 import tornadofx.*
 
 class BasketView : View("Basket") {
 
-    val bController : BasketController by inject()
+    private val bController : BasketController by inject()
 
-    override val root = vbox {
+    override val root = vbox(10) {
         alignment = Pos.TOP_CENTER
         label("Basket") {
             addClass(Styles.tabName)
@@ -23,7 +23,10 @@ class BasketView : View("Basket") {
 
         listview(bController.itemsInBasket) {
             cellFormat {
-                graphic = borderpane() {
+                graphicProperty().assignIfNull {
+                    label("Empty")
+                }
+                graphic = borderpane {
                     addClass(Styles.basketItems)
                     left = label(it.name.value)
                     right = hbox(2.0) {
@@ -53,13 +56,13 @@ class BasketView : View("Basket") {
                 }
             }
         }
-
         button("Make order") {
             alignment = Pos.CENTER
             style {
                 backgroundColor += Color.DODGERBLUE
                 textFill = Color.WHITE
                 fontSize = 15.px
+                spacing = 20.px
             }
             action {
                 if(bController.canMakeOrder()) {
@@ -71,6 +74,7 @@ class BasketView : View("Basket") {
             }
         }
     }
+
 }
 
 class EmptyBasketView: Fragment() {
@@ -88,7 +92,7 @@ class TotalBasket: Fragment() {
     override val root = vbox(20.0){
         alignment = Pos.CENTER
         addClass(Styles.loginScreen)
-        label("Total: " + bController.getTotalPrice().toString())
+        label("Total: " + bController.getTotalPrice())
         button("Confirm") {
             style {
                 backgroundColor += Color.DODGERBLUE
@@ -97,7 +101,10 @@ class TotalBasket: Fragment() {
                 spacing = 20.px
             }
             action {
-
+                scale(Duration(400.0), Point2D(2.0, 2.0),
+                        reversed = true)
+                bController.confirmOrder()
+                close()
             }
         }
     }

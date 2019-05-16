@@ -4,7 +4,6 @@ import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.FontWeight
 import tornadofx.*
-import java.time.Duration
 
 class Styles : Stylesheet() {
     companion object {

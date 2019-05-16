@@ -4,15 +4,16 @@ import com.example.demo.model.UserModel
 import com.example.demo.model.Users
 import com.example.demo.model.connectAndExec
 import com.example.demo.view.LoginView
-import com.example.demo.view.SignUpView
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.select
 import tornadofx.*
 
-class UserController(): Controller() {
-    val loginScreen: LoginView by inject()
+class UserController: Controller() {
+    private val loginScreen: LoginView by inject()
+    private val bController: BasketController by inject()
+    private val orderController: OrderController by inject()
 
     var isAuthorized: Boolean = false
     var userId: EntityID<Int> = EntityID(0, Users)
@@ -32,6 +33,7 @@ class UserController(): Controller() {
                 save()
             }
             loginScreen.clean()
+            orderController.changeUserOrders()
             return true
         }
         return false
@@ -39,13 +41,15 @@ class UserController(): Controller() {
 
     fun autoLogin(): Boolean {
         with(config) {
-            if (containsKey(USERNAME) && containsKey(PASSWORD))
+            if (containsKey(USERNAME) && containsKey(PASSWORD)) {
                 return authenticate(string(USERNAME), string(PASSWORD))
+            }
         }
         return false
     }
 
     fun logout() {
+        bController.itemsInBasket.clear()
         with(config) {
             remove(USERNAME)
             remove(PASSWORD)
@@ -54,7 +58,7 @@ class UserController(): Controller() {
     }
 
     fun register(model: UserModel): Boolean {
-        var isAlready: Boolean = false
+        var isAlready = false
         connectAndExec {
             isAlready = Users.select {
                 (Users.username like model.username.value) and (Users.passwordHash eq model.

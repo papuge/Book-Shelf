@@ -33,12 +33,6 @@ class LoginView : View("Welcome to Book Store!") {
                     addClass(Styles.loginScreen)
                     passwordfield(model.password) {
                         required()
-                        validator {
-                            if(it.isNullOrBlank()) null
-                            else {
-                               if (it!!.length < 4) error("Password min length: 4") else null
-                            }
-                        }
                     }
                 }
             }
@@ -75,7 +69,6 @@ class LoginView : View("Welcome to Book Store!") {
                         fontSize = 15.px
                     }
                     action {
-                        scale(Duration(400.0), Point2D(1.5, 1.5))
                         replaceWith<SignUpView>(sizeToScene = true)
                     }
                 }
@@ -89,9 +82,6 @@ class LoginView : View("Welcome to Book Store!") {
         model.validate(decorateErrors = false)
         if (loginController.autoLogin())
             replaceWith<TabbedMenuView>(sizeToScene = true)
-//        with(root) {
-//            resize(250.0, 300.0)
-//        }
     }
 
     fun clean() {

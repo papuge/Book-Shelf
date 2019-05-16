@@ -13,15 +13,6 @@ class SignUpView : View("Welcome to Book Store!") {
     private val controller: UserController by inject()
 
     override val root = borderpane {
-        top = button("< Back") {
-            style {
-                textFill = Color.GRAY
-            }
-            alignment = Pos.TOP_LEFT
-            action {
-                replaceWith<LoginView>(sizeToScene = true)
-            }
-        }
         center = form {
             form {
                 addClass(Styles.loginScreen)
@@ -49,7 +40,7 @@ class SignUpView : View("Welcome to Book Store!") {
                             validator {
                                 if(it.isNullOrBlank()) null
                                 else {
-                                    if (it!!.length < 4 && it!!.contains('@'))
+                                    if (it!!.length < 4 || !it!!.contains("@"))
                                         error("invalid email") else null
                                 }
                             }

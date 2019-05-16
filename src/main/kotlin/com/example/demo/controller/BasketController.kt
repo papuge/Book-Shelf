@@ -1,21 +1,22 @@
 package com.example.demo.controller
 
 import com.example.demo.model.BasketItem
-import com.example.demo.view.BasketView
+import com.example.demo.model.CurrencyStrategy.Currency
 import javafx.beans.property.*
 import javafx.collections.FXCollections
 import tornadofx.*
 
 class BasketController: Controller() {
-    val view: BasketView by inject()
+    private val orderController: OrderController by inject()
 
     class ItemInBasket(basketItem: BasketItem) {
         val name = SimpleStringProperty(basketItem.title)
         var amount = 1.toProperty()
-        val one_price = basketItem.calcPrice()
-        var price = one_price.toProperty()
+        private val onePrice = basketItem.calcPrice()
+        val price = Currency.getPrice(calcPrice()).toProperty()
 
-        fun calcPrice() = one_price * amount.value
+        fun calcPrice() = onePrice * amount.value
+        fun priceToString() = Currency.getPrice(calcPrice())
     }
 
     val itemsInBasket =
@@ -32,13 +33,13 @@ class BasketController: Controller() {
 
     fun inc(item: ItemInBasket) {
         item.amount.value += 1
-        item.price.value = item.calcPrice()
+        item.price.value = item.priceToString()
     }
 
     fun dec(item: ItemInBasket) {
         if (item.amount.value > 1) {
             item.amount.value -= 1
-            item.price.value = item.calcPrice()
+            item.price.value = item.priceToString()
         }
     }
 
@@ -53,11 +54,17 @@ class BasketController: Controller() {
         return true
     }
 
-    fun getTotalPrice(): Double {
+    fun getTotalPrice(): String {
         var price = .0
         for (i in itemsInBasket) {
             price += i.calcPrice()
         }
-        return price
+        return Currency.getPrice(price)
+    }
+
+    fun confirmOrder() {
+        orderController.addOrder(itemsInBasket, getTotalPrice())
+        orderController.updateOrders()
+        itemsInBasket.clear()
     }
 }

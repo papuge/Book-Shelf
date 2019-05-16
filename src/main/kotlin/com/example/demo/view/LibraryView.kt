@@ -2,20 +2,17 @@ package com.example.demo.view
 
 import com.example.demo.app.Styles
 import com.example.demo.controller.LibraryController
-import com.example.demo.model.Book
 import javafx.geometry.Point2D
 import javafx.geometry.Pos
 import javafx.scene.paint.Color
 import javafx.scene.text.FontPosture
-import javafx.scene.text.FontWeight
 import javafx.util.Duration
 import tornadofx.*
-import java.awt.Font
 
 
 class LibraryView : View("Library") {
 
-    val libController: LibraryController by inject()
+    private val libController: LibraryController by inject()
 
     override val root = vbox(15){
         alignment = Pos.TOP_CENTER
@@ -27,14 +24,28 @@ class LibraryView : View("Library") {
         }
         textfield {
             promptText = "Search"
-            libController.data.filterWhen(textProperty(),
-                    { query, item -> item.title.contains(query, ignoreCase = true)
-                            || item.author.contains(query, ignoreCase = true)})
+            libController.data.filterWhen(textProperty()
+            ) { query, item -> item.title.contains(query, ignoreCase = true)
+                    || item.author.contains(query, ignoreCase = true)}
             style{
                 spacing = 10.px
                 maxWidth = 350.px
             }
             isFocusTraversable = false
+        }
+        hbox(20) {
+            alignment = Pos.CENTER
+            label("Currency")
+            togglegroup {
+                radiobutton("BYN", value = "BYN") {
+                    isSelected = true
+                }
+                radiobutton("USD", value = "USD")
+                radiobutton("EUR", value = "EUR")
+                selectedValueProperty<String>().onChange {
+                    libController.setCurrency(it!!)
+                }
+            }
         }
         borderpane {
             center = datagrid(libController.data) {
@@ -52,7 +63,7 @@ class LibraryView : View("Library") {
                             fitWidth = 100.0
                             spacing = 10.0
                         }
-                        label(it.calcPrice().toString())
+                        label().bind(it.currencyPrice)
                         button("Add") {
                             alignment = Pos.BOTTOM_CENTER
                             style {
@@ -61,7 +72,7 @@ class LibraryView : View("Library") {
                             }
                             action {
                                 libController.addToBasket(it)
-                                scale(Duration(350.0), Point2D(2.0, 2.0),
+                                scale(Duration(400.0), Point2D(2.0, 2.0),
                                         reversed = true)
                             }
                         }
@@ -72,7 +83,7 @@ class LibraryView : View("Library") {
     }
 }
 
-class ItemView(): Fragment() {
+class ItemView: Fragment() {
     override val scope = super.scope as LibraryController.ItemScope
     private val model = scope.model
 
