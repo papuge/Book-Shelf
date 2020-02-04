@@ -1,4 +1,4 @@
- ## Book Store 
+ ## Book Shelf
 
  *Desktop app powered by [TornadoFX](https://github.com/edvin/tornadofx)*  
 
